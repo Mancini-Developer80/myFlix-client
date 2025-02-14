@@ -2954,7 +2954,7 @@ const MyFlixApplication = ()=>{
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         className: "my-flix",
         children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-            children: "Good morning"
+            children: "MyFlix App Frontend Side"
         }, void 0, false, {
             fileName: "src/index.jsx",
             lineNumber: 10,
