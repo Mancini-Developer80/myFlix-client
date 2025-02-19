@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "title": "Jurassic Park",
+    "year": 1993,
+    "image": "sandbox:/path/to/image.jpg",
+    "rating": 8.1,
+    "actors": ["Sam Neill", "Laura Dern", "Jeff Goldblum"],
+    "genre": "Adventure, Sci-Fi"
+  },
+  {
+    "id": 2,
+    "title": "The Matrix",
+    "year": 1999,
+    "image": "sandbox:/path/to/image.jpg",
+    "rating": 8.7,
+    "actors": ["Keanu Reeves", "Laurence Fishburne", "Carrie-Anne Moss"],
+    "genre": "Action, Sci-Fi"
+  },
+  {
+    "id": 3,
+    "title": "Inception",
+    "year": 2010,
+    "image": "sandbox:/path/to/image.jpg",
+    "rating": 8.8,
+    "actors": ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"],
+    "genre": "Action, Adventure, Sci-Fi"
+  },
+  {
+    "id": 4,
+    "title": "The Lion King",
+    "year": 1994,
+    "image": "sandbox:/path/to/image.jpg",
+    "rating": 8.5,
+    "actors": ["Matthew Broderick", "James Earl Jones", "Jeremy Irons"],
+    "genre": "Animation, Adventure, Drama"
+  },
+  {
+    "id": 5,
+    "title": "Titanic",
+    "year": 1997,
+    "image": "sandbox:/path/to/image.jpg",
+    "rating": 7.8,
+    "actors": ["Leonardo DiCaprio", "Kate Winslet"],
+    "genre": "Drama, Romance"
+  }
+]
