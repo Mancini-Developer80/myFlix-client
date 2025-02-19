@@ -1,6 +1,6 @@
 import React from "react";
 
-export function MovieView({ movie, onBackClick }) {
+function MovieView({ movie, onBackClick }) {
   return (
     <div className="main-view">
       <h1>{movie.title}</h1>
@@ -26,3 +26,5 @@ export function MovieView({ movie, onBackClick }) {
     </div>
   );
 }
+
+export default MovieView;

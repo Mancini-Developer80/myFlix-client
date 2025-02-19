@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { MovieCard } from "../movie-card/MovieCard";
-import { MovieView } from "../movie-view/MovieView";
+import MovieCard from "../movie-card/MovieCard";
+import MovieView from "../movie-view/MovieView";
 
-export function MainView() {
+function MainView() {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [movies, setMovies] = useState([
     {
@@ -64,3 +64,5 @@ export function MainView() {
     </div>
   );
 }
+
+export default MainView;
