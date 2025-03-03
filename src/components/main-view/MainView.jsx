@@ -1,47 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MovieCard } from "../movie-card/MovieCard";
 import { MovieView } from "../movie-view/MovieView";
+import PropTypes from "prop-types";
 
 export function MainView() {
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [movies, setMovies] = useState([
-    {
-      id: 1,
-      title: "Jurassic Park",
-      year: 1993,
-      image: "https://m.media-amazon.com/images/I/711ewSpPgUL._SL1200_.jpg",
-      rating: 8.1,
-      actors: ["Sam Neill", "Laura Dern", "Jeff Goldblum"],
-      genre: "Adventure, Sci-Fi",
-      description:
-        "A pragmatic paleontologist visiting an almost complete theme park is tasked with protecting a couple of kids after a power failure causes the park's cloned dinosaurs to run loose.",
-      director: "Steven Spielberg",
-    },
-    {
-      id: 2,
-      title: "The Matrix",
-      year: 1999,
-      image: "https://m.media-amazon.com/images/I/71D8+NFLZmL._SL1500_.jpg",
-      rating: 8.7,
-      actors: ["Keanu Reeves", "Laurence Fishburne", "Carrie-Anne Moss"],
-      genre: "Action, Sci-Fi",
-      description:
-        "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
-      director: "Lana Wachowski, Lilly Wachowski",
-    },
-    {
-      id: 3,
-      title: "Inception",
-      year: 2010,
-      image: "https://m.media-amazon.com/images/I/912AErFSBHL._SL1500_.jpg",
-      rating: 8.8,
-      actors: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"],
-      genre: "Action, Adventure, Sci-Fi",
-      description:
-        "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
-      director: "Christopher Nolan",
-    },
-  ]);
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    fetch("https://murmuring-brook-46457-0204485674b0.herokuapp.com/movies")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setMovies(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching movies:", error);
+      });
+  }, []);
 
   if (selectedMovie) {
     return (
@@ -56,7 +32,7 @@ export function MainView() {
     <div className="container">
       {movies.map((movie) => (
         <MovieCard
-          key={movie.id}
+          key={movie._id}
           movie={movie}
           onClick={() => setSelectedMovie(movie)}
         />
@@ -64,3 +40,35 @@ export function MainView() {
     </div>
   );
 }
+
+MainView.propTypes = {
+  selectedMovie: PropTypes.shape({
+    Title: PropTypes.string,
+    image: PropTypes.string,
+    Description: PropTypes.string,
+    Genre: PropTypes.shape({
+      Description: PropTypes.string,
+    }),
+    Director: PropTypes.shape({
+      Name: PropTypes.string,
+    }),
+    Actors: PropTypes.arrayOf(PropTypes.string),
+  }),
+  movies: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      Title: PropTypes.string.isRequired,
+      image: PropTypes.string.isRequired,
+      Description: PropTypes.string.isRequired,
+      Genre: PropTypes.shape({
+        Description: PropTypes.string.isRequired,
+      }).isRequired,
+      Director: PropTypes.shape({
+        Name: PropTypes.string.isRequired,
+      }).isRequired,
+      Actors: PropTypes.arrayOf(PropTypes.string),
+    })
+  ).isRequired,
+  setSelectedMovie: PropTypes.func,
+  setMovies: PropTypes.func,
+};
