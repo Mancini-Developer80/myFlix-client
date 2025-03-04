@@ -1,14 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { MovieCard } from "../movie-card/MovieCard";
 import { MovieView } from "../movie-view/MovieView";
+import { LoginView } from "../loginView/LoginView";
+import { SignupView } from "../signupView/SignupView";
 import PropTypes from "prop-types";
 
 export function MainView() {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [movies, setMovies] = useState([]);
+  const [user, setUser] = useState(() => {
+    // Retrieve user from localStorage if available
+    const savedUser = localStorage.getItem("user");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+  const [showSignup, setShowSignup] = useState(false);
 
   useEffect(() => {
-    fetch("https://murmuring-brook-46457-0204485674b0.herokuapp.com/movies")
+    const token = localStorage.getItem("token");
+    fetch("https://murmuring-brook-46457-0204485674b0.herokuapp.com/movies", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -18,6 +31,29 @@ export function MainView() {
         console.error("Error fetching movies:", error);
       });
   }, []);
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+  };
+
+  const handleLogin = (user, token) => {
+    setUser(user);
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("token", token);
+  };
+
+  if (!user) {
+    return (
+      <div>
+        {showSignup ? <SignupView /> : <LoginView onLoggedIn={handleLogin} />}
+        <button onClick={() => setShowSignup(!showSignup)}>
+          {showSignup ? "Login" : "Signup"}
+        </button>
+      </div>
+    );
+  }
 
   if (selectedMovie) {
     return (
@@ -30,6 +66,7 @@ export function MainView() {
 
   return (
     <div className="container">
+      <button onClick={handleLogout}>Logout</button>
       {movies.map((movie) => (
         <MovieCard
           key={movie._id}
