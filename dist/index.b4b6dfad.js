@@ -19894,8 +19894,8 @@ function LoginView({ onLoggedIn }) {
             return;
         }
         const data = {
-            Username: username,
-            Password: password
+            username: username,
+            password: password
         };
         fetch("https://murmuring-brook-46457-0204485674b0.herokuapp.com/login", {
             method: "POST",
