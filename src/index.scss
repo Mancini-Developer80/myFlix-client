@@ -1,0 +1,6 @@
+// Override Bootstrap button variables
+$btn-color: #ffffff; // Change this to your desired button text color
+$btn-bg: #007bff; // Change this to your desired button background color
+
+// Import Bootstrap SCSS
+@import "~bootstrap/scss/bootstrap.scss";

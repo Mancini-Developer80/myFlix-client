@@ -22,7 +22,7 @@ export function MainView() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch("https://murmuring-brook-46457-0204485674b0.herokuapp.com", {
+    fetch("https://murmuring-brook-46457-0204485674b0.herokuapp.com/movies", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
