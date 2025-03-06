@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { MovieCard } from "../movie-card/MovieCard";
 import { MovieView } from "../movie-view/MovieView";
 import { LoginView } from "../loginView/LoginView";
 import { SignupView } from "../signupView/SignupView";
 import PropTypes from "prop-types";
+import Button from "react-bootstrap/Button";
+import "./mainView.scss";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import React from "react";
 
 export function MainView() {
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -17,7 +22,7 @@ export function MainView() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch("https://murmuring-brook-46457-0204485674b0.herokuapp.com/movies", {
+    fetch("https://murmuring-brook-46457-0204485674b0.herokuapp.com", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -46,35 +51,54 @@ export function MainView() {
 
   if (!user) {
     return (
-      <div>
-        {showSignup ? <SignupView /> : <LoginView onLoggedIn={handleLogin} />}
-        <button onClick={() => setShowSignup(!showSignup)}>
-          {showSignup ? "Login" : "Signup"}
-        </button>
-      </div>
+      <row>
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+          <div className="w-75 bg-light p-4">
+            {showSignup ? (
+              <SignupView />
+            ) : (
+              <LoginView onLoggedIn={handleLogin} />
+            )}
+            <Button
+              onClick={() => setShowSignup(!showSignup)}
+              className="mt-3 w-100"
+            >
+              {showSignup ? "Login" : "Signup"}
+            </Button>
+          </div>
+        </div>
+      </row>
     );
   }
 
   if (selectedMovie) {
     return (
-      <MovieView
-        movie={selectedMovie}
-        onBackClick={() => setSelectedMovie(null)}
-      />
+      <Col>
+        <MovieView
+          movie={selectedMovie}
+          onBackClick={() => setSelectedMovie(null)}
+        />
+      </Col>
     );
   }
 
   return (
-    <div className="container">
-      <button onClick={handleLogout}>Logout</button>
-      {movies.map((movie) => (
-        <MovieCard
-          key={movie._id}
-          movie={movie}
-          onClick={() => setSelectedMovie(movie)}
-        />
-      ))}
-    </div>
+    <Row>
+      <div>
+        <Button onClick={handleLogout} className="mb-3">
+          Logout
+        </Button>
+        <div className="d-flex flex-wrap">
+          {movies.map((movie) => (
+            <MovieCard
+              key={movie._id}
+              movie={movie}
+              onClick={() => setSelectedMovie(movie)}
+            />
+          ))}
+        </div>
+      </div>
+    </Row>
   );
 }
 

@@ -1,4 +1,8 @@
 import { useState } from "react";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Alert from "react-bootstrap/Alert";
+import React from "react";
 
 export function SignupView() {
   const [username, setUsername] = useState("");
@@ -21,9 +25,9 @@ export function SignupView() {
     }
 
     const data = {
-      Username: username,
-      Password: password,
-      Email: email,
+      username: username,
+      password: password,
+      email: email,
     };
 
     fetch("https://murmuring-brook-46457-0204485674b0.herokuapp.com/users", {
@@ -49,40 +53,52 @@ export function SignupView() {
   };
 
   return (
-    <div className="signup-view">
-      <h1>Signup</h1>
-      {error && <p className="error">{error}</p>}
-      {success && <p className="success">{success}</p>}
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username:
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </label>
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </label>
-        <label>
-          Email:
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
+    <div className="d-flex justify-content-center align-items-center">
+      <div className="w-100 bg-light p-4">
+        <h1 className="text-center mb-4">Signup</h1>
+        {error && (
+          <Alert variant="danger" className="text-center mb-3">
+            {error}
+          </Alert>
+        )}
+        {success && (
+          <Alert variant="success" className="text-center mb-3">
+            {success}
+          </Alert>
+        )}
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="formUsername" className="mb-3">
+            <Form.Label>Username</Form.Label>
+            <Form.Control
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group controlId="formPassword" className="mb-3">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group controlId="formEmail" className="mb-3">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Button type="submit" variant="primary" className="w-100">
+            Submit
+          </Button>
+        </Form>
+      </div>
     </div>
   );
 }

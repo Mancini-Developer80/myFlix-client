@@ -9,8 +9,11 @@
   "author": "Giuseppe Mancini",
   "license": "ISC",
   "dependencies": {
+    "@restart/hooks": "^0.6.2",
+    "bootstrap": "^5.3.3",
     "prop-types": "^15.8.1",
     "react": "^19.0.0",
+    "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
