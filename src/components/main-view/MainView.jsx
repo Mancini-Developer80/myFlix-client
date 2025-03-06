@@ -5,7 +5,7 @@ import { LoginView } from "../loginView/LoginView";
 import { SignupView } from "../signupView/SignupView";
 import PropTypes from "prop-types";
 import Button from "react-bootstrap/Button";
-import "./mainView.scss";
+
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import React from "react";
