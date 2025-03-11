@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import Button from "react-bootstrap/Button";
 
 export function MovieView({ movie, onBackClick }) {
   return (
@@ -16,13 +18,15 @@ export function MovieView({ movie, onBackClick }) {
         <strong>Director:</strong> {movie.Director.Name}
       </p>
       <p>
-        <strong>Actors:</strong>
+        <strong>Actors: </strong>
       </p>
       <ul>
         {movie.Actors &&
           movie.Actors.map((actor, index) => <li key={index}>{actor}</li>)}
       </ul>
-      <button onClick={onBackClick}>Back</button>
+      <Link to="/" className="btn btn-primary">
+        Back
+      </Link>
     </div>
   );
 }

@@ -1,6 +1,8 @@
+import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { BrowserRouter as Router } from "react-router-dom";
 import { MainView } from "./components/main-view/MainView";
 
 // Import statement to indicate that you need to bundle `./index.scss`

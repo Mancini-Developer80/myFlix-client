@@ -1,17 +1,22 @@
 import { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Link,
+} from "react-router-dom";
 import { MovieCard } from "../movie-card/MovieCard";
 import { MovieView } from "../movie-view/MovieView";
 import { LoginView } from "../loginView/LoginView";
 import { SignupView } from "../signupView/SignupView";
 import PropTypes from "prop-types";
 import Button from "react-bootstrap/Button";
-
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import React from "react";
+// import "./mainView.scss";
 
 export function MainView() {
-  const [selectedMovie, setSelectedMovie] = useState(null);
   const [movies, setMovies] = useState([]);
   const [user, setUser] = useState(() => {
     // Retrieve user from localStorage if available
@@ -50,72 +55,70 @@ export function MainView() {
     localStorage.setItem("token", token);
   };
 
-  if (!user) {
-    return (
-      <row>
-        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
-          <div className="w-75 bg-light p-4">
-            {showSignup ? (
-              <SignupView />
-            ) : (
-              <LoginView onLoggedIn={handleLogin} />
-            )}
-            <Button
-              onClick={() => setShowSignup(!showSignup)}
-              className="mt-3 w-100"
-            >
-              {showSignup ? "Login" : "Signup"}
-            </Button>
-          </div>
-        </div>
-      </row>
-    );
-  }
-
-  if (selectedMovie) {
-    return (
-      <Col>
-        <MovieView
-          movie={selectedMovie}
-          onBackClick={() => setSelectedMovie(null)}
-        />
-      </Col>
-    );
-  }
-
   return (
-    <Row>
-      <div>
-        <Button onClick={handleLogout} className="mb-3">
-          Logout
-        </Button>
-        <div className="d-flex flex-wrap">
-          {movies.map((movie) => (
-            <MovieCard
-              key={movie._id}
-              movie={movie}
-              onClick={() => setSelectedMovie(movie)}
-            />
-          ))}
-        </div>
-      </div>
-    </Row>
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            user ? (
+              <Row>
+                <div>
+                  <Button onClick={handleLogout} className="mb-3">
+                    Logout
+                  </Button>
+                  <div className="d-flex flex-wrap">
+                    {movies.map((movie) => (
+                      <MovieCard key={movie._id} movie={movie} />
+                    ))}
+                  </div>
+                </div>
+              </Row>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+              <div className="w-75 shadow-sm rounded bg-light p-4">
+                <LoginView onLoggedIn={handleLogin} />
+                <Link to="/signup" className="btn btn-primary mt-3 w-100">
+                  Signup
+                </Link>
+              </div>
+            </div>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+              <div className="w-75 shadow-sm rounded bg-light p-4">
+                <SignupView />
+                <Link to="/login" className="btn btn-primary mt-3 w-100">
+                  Login
+                </Link>
+              </div>
+            </div>
+          }
+        />
+        <Route
+          path="/movies/:movieId"
+          element={
+            <Col>
+              <MovieView />
+            </Col>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
 MainView.propTypes = {
-  selectedMovie: PropTypes.shape({
-    Title: PropTypes.string,
-    image: PropTypes.string,
-    Description: PropTypes.string,
-    Genre: PropTypes.shape({
-      Description: PropTypes.string,
-    }),
-    Director: PropTypes.shape({
-      Name: PropTypes.string,
-    }),
-    Actors: PropTypes.arrayOf(PropTypes.string),
-  }),
   movies: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
@@ -131,6 +134,5 @@ MainView.propTypes = {
       Actors: PropTypes.arrayOf(PropTypes.string),
     })
   ).isRequired,
-  setSelectedMovie: PropTypes.func,
   setMovies: PropTypes.func,
 };
