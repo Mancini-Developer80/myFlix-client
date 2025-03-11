@@ -5,11 +5,13 @@ import {
   Route,
   Navigate,
   Link,
+  useParams,
 } from "react-router-dom";
 import { MovieCard } from "../movie-card/MovieCard";
 import { MovieView } from "../movie-view/MovieView";
-import { LoginView } from "../loginView/LoginView";
-import { SignupView } from "../signupView/SignupView";
+import { LoginView } from "../login-view/LoginView";
+import { SignupView } from "../signup-view/SignupView";
+import { ProfileView } from "../profile-view/ProfileView";
 import PropTypes from "prop-types";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -57,6 +59,51 @@ export function MainView() {
     localStorage.setItem("token", token);
   };
 
+  const handleUserUpdated = (updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+  };
+
+  const handleFavoriteToggle = (movieId) => {
+    const isFavorite = user.FavoriteMovies.includes(movieId);
+    const updatedFavorites = isFavorite
+      ? user.FavoriteMovies.filter((id) => id !== movieId)
+      : [...user.FavoriteMovies, movieId];
+
+    const updatedUser = { ...user, FavoriteMovies: updatedFavorites };
+
+    fetch(
+      `https://murmuring-brook-46457-0204485674b0.herokuapp.com/users/${user.Username}/movies/${movieId}`,
+      {
+        method: isFavorite ? "DELETE" : "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    )
+      .then(() => {
+        handleUserUpdated(updatedUser);
+      })
+      .catch((error) => {
+        console.error("Error updating favorite movies:", error);
+      });
+  };
+
+  const MovieViewWrapper = () => {
+    const { movieId } = useParams();
+    const movie = movies.find((m) => m._id === movieId);
+    if (!movie) return <Navigate to="/" />;
+    return (
+      <Col>
+        <MovieView
+          movie={movie}
+          isFavorite={user?.FavoriteMovies?.includes(movie._id)}
+          onFavoriteToggle={handleFavoriteToggle}
+        />
+      </Col>
+    );
+  };
+
   return (
     <Router>
       <Navbar bg="light" expand="lg">
@@ -98,7 +145,12 @@ export function MainView() {
                 <div>
                   <div className="d-flex flex-wrap">
                     {movies.map((movie) => (
-                      <MovieCard key={movie._id} movie={movie} />
+                      <MovieCard
+                        key={movie._id}
+                        movie={movie}
+                        isFavorite={user?.FavoriteMovies?.includes(movie._id)}
+                        onFavoriteToggle={handleFavoriteToggle}
+                      />
                     ))}
                   </div>
                 </div>
@@ -114,9 +166,6 @@ export function MainView() {
             <div className="d-flex flex-column justify-content-center align-items-center vh-100">
               <div className="w-75 shadow-sm rounded bg-light p-4">
                 <LoginView onLoggedIn={handleLogin} />
-                <Link to="/signup" className="btn btn-primary mt-3 w-100">
-                  Signup
-                </Link>
               </div>
             </div>
           }
@@ -127,31 +176,21 @@ export function MainView() {
             <div className="d-flex flex-column justify-content-center align-items-center vh-100">
               <div className="w-75 shadow-sm rounded bg-light p-4">
                 <SignupView />
-                <Link to="/login" className="btn btn-primary mt-3 w-100">
-                  Login
-                </Link>
               </div>
             </div>
           }
         />
-        <Route
-          path="/movies/:movieId"
-          element={
-            <Col>
-              <MovieView />
-            </Col>
-          }
-        />
+        <Route path="/movies/:movieId" element={<MovieViewWrapper />} />
         <Route
           path="/profile"
           element={
             user ? (
-              <div className="d-flex flex-column justify-content-center align-items-center vh-100">
-                <div className="w-75 shadow-sm rounded bg-light p-4">
-                  <h1>Profile</h1>
-                  <p>Welcome, {user.Username}!</p>
-                </div>
-              </div>
+              <ProfileView
+                user={user}
+                movies={movies}
+                onLoggedOut={handleLogout}
+                onUserUpdated={handleUserUpdated}
+              />
             ) : (
               <Navigate to="/login" />
             )

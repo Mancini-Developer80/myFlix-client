@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 
-export function MovieView({ movie, onBackClick }) {
+export function MovieView({ movie, isFavorite, onFavoriteToggle }) {
   return (
     <div className="main-view">
       <h1>{movie.Title}</h1>
@@ -27,6 +27,13 @@ export function MovieView({ movie, onBackClick }) {
       <Link to="/" className="btn btn-primary">
         Back
       </Link>
+      <Button
+        variant={isFavorite ? "danger" : "success"}
+        className="ml-2"
+        onClick={() => onFavoriteToggle(movie._id)}
+      >
+        {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+      </Button>
     </div>
   );
 }
@@ -44,5 +51,6 @@ MovieView.propTypes = {
     Actors: PropTypes.array.isRequired,
     image: PropTypes.string.isRequired,
   }).isRequired,
-  onBackClick: PropTypes.func.isRequired,
+  isFavorite: PropTypes.bool.isRequired,
+  onFavoriteToggle: PropTypes.func.isRequired,
 };
