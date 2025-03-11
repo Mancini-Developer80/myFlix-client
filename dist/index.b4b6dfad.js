@@ -18626,6 +18626,7 @@ function MainView() {
     const [showSignup, setShowSignup] = (0, _react.useState)(false);
     (0, _react.useEffect)(()=>{
         const token = localStorage.getItem("token");
+        if (!token) return;
         fetch("https://murmuring-brook-46457-0204485674b0.herokuapp.com/movies", {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -18636,7 +18637,9 @@ function MainView() {
         }).catch((error)=>{
             console.error("Error fetching movies:", error);
         });
-    }, []);
+    }, [
+        user
+    ]);
     const handleLogout = ()=>{
         setUser(null);
         localStorage.removeItem("user");
@@ -18655,13 +18658,13 @@ function MainView() {
                 children: [
                     showSignup ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _signupView.SignupView), {}, void 0, false, {
                         fileName: "src/components/main-view/MainView.jsx",
-                        lineNumber: 58,
+                        lineNumber: 59,
                         columnNumber: 15
                     }, this) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _loginView.LoginView), {
                         onLoggedIn: handleLogin
                     }, void 0, false, {
                         fileName: "src/components/main-view/MainView.jsx",
-                        lineNumber: 60,
+                        lineNumber: 61,
                         columnNumber: 15
                     }, this),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _buttonDefault.default), {
@@ -18670,23 +18673,23 @@ function MainView() {
                         children: showSignup ? "Login" : "Signup"
                     }, void 0, false, {
                         fileName: "src/components/main-view/MainView.jsx",
-                        lineNumber: 62,
+                        lineNumber: 63,
                         columnNumber: 13
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "src/components/main-view/MainView.jsx",
-                lineNumber: 56,
+                lineNumber: 57,
                 columnNumber: 11
             }, this)
         }, void 0, false, {
             fileName: "src/components/main-view/MainView.jsx",
-            lineNumber: 55,
+            lineNumber: 56,
             columnNumber: 9
         }, this)
     }, void 0, false, {
         fileName: "src/components/main-view/MainView.jsx",
-        lineNumber: 54,
+        lineNumber: 55,
         columnNumber: 7
     }, this);
     if (selectedMovie) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _colDefault.default), {
@@ -18695,12 +18698,12 @@ function MainView() {
             onBackClick: ()=>setSelectedMovie(null)
         }, void 0, false, {
             fileName: "src/components/main-view/MainView.jsx",
-            lineNumber: 77,
+            lineNumber: 78,
             columnNumber: 9
         }, this)
     }, void 0, false, {
         fileName: "src/components/main-view/MainView.jsx",
-        lineNumber: 76,
+        lineNumber: 77,
         columnNumber: 7
     }, this);
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _rowDefault.default), {
@@ -18712,7 +18715,7 @@ function MainView() {
                     children: "Logout"
                 }, void 0, false, {
                     fileName: "src/components/main-view/MainView.jsx",
-                    lineNumber: 88,
+                    lineNumber: 89,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -18722,23 +18725,23 @@ function MainView() {
                             onClick: ()=>setSelectedMovie(movie)
                         }, movie._id, false, {
                             fileName: "src/components/main-view/MainView.jsx",
-                            lineNumber: 93,
+                            lineNumber: 94,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "src/components/main-view/MainView.jsx",
-                    lineNumber: 91,
+                    lineNumber: 92,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "src/components/main-view/MainView.jsx",
-            lineNumber: 87,
+            lineNumber: 88,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/components/main-view/MainView.jsx",
-        lineNumber: 86,
+        lineNumber: 87,
         columnNumber: 5
     }, this);
 }

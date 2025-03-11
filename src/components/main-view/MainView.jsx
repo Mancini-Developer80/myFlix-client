@@ -22,6 +22,7 @@ export function MainView() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    if (!token) return;
     fetch("https://murmuring-brook-46457-0204485674b0.herokuapp.com/movies", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -35,7 +36,7 @@ export function MainView() {
       .catch((error) => {
         console.error("Error fetching movies:", error);
       });
-  }, []);
+  }, [user]);
 
   const handleLogout = () => {
     setUser(null);
