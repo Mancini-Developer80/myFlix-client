@@ -14,6 +14,8 @@ import PropTypes from "prop-types";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
 // import "./mainView.scss";
 
 export function MainView() {
@@ -57,6 +59,36 @@ export function MainView() {
 
   return (
     <Router>
+      <Navbar bg="light" expand="lg">
+        <Navbar.Brand as={Link} to="/">
+          MyFlix
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ml-auto">
+            {user ? (
+              <>
+                <Nav.Link as={Link} to="/">
+                  Home
+                </Nav.Link>
+                <Nav.Link as={Link} to="/profile">
+                  Profile
+                </Nav.Link>
+                <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+              </>
+            ) : (
+              <>
+                <Nav.Link as={Link} to="/login">
+                  Login
+                </Nav.Link>
+                <Nav.Link as={Link} to="/signup">
+                  Signup
+                </Nav.Link>
+              </>
+            )}
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
       <Routes>
         <Route
           path="/"
@@ -64,9 +96,6 @@ export function MainView() {
             user ? (
               <Row>
                 <div>
-                  <Button onClick={handleLogout} className="mb-3">
-                    Logout
-                  </Button>
                   <div className="d-flex flex-wrap">
                     {movies.map((movie) => (
                       <MovieCard key={movie._id} movie={movie} />
@@ -111,6 +140,21 @@ export function MainView() {
             <Col>
               <MovieView />
             </Col>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            user ? (
+              <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+                <div className="w-75 shadow-sm rounded bg-light p-4">
+                  <h1>Profile</h1>
+                  <p>Welcome, {user.Username}!</p>
+                </div>
+              </div>
+            ) : (
+              <Navigate to="/login" />
+            )
           }
         />
       </Routes>
