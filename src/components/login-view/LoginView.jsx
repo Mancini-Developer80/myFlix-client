@@ -4,11 +4,13 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export function LoginView({ onLoggedIn }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,6 +37,7 @@ export function LoginView({ onLoggedIn }) {
       .then((data) => {
         if (data.token) {
           onLoggedIn(data.user, data.token);
+          navigate("/");
         } else {
           setError("Login failed");
         }

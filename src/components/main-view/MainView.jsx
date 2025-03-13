@@ -54,6 +54,10 @@ export function MainView() {
   };
 
   const handleLogin = (user, token) => {
+    // Ensure FavoriteMovies is an array
+    if (!Array.isArray(user.FavoriteMovies)) {
+      user.FavoriteMovies = [];
+    }
     setUser(user);
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("token", token);
@@ -65,28 +69,34 @@ export function MainView() {
   };
 
   const handleFavoriteToggle = (movieId) => {
-    const isFavorite = user.FavoriteMovies.includes(movieId);
-    const updatedFavorites = isFavorite
-      ? user.FavoriteMovies.filter((id) => id !== movieId)
-      : [...user.FavoriteMovies, movieId];
+    // Instead of directly iterating over it, check if it exists and it is an array
+    if (user && Array.isArray(user.FavoriteMovies)) {
+      const isFavorite = user.FavoriteMovies.includes(movieId);
+      const updatedFavorites = isFavorite
+        ? user.FavoriteMovies.filter((id) => id !== movieId)
+        : [...user.FavoriteMovies, movieId];
 
-    const updatedUser = { ...user, FavoriteMovies: updatedFavorites };
+      const updatedUser = { ...user, FavoriteMovies: updatedFavorites };
 
-    fetch(
-      `https://murmuring-brook-46457-0204485674b0.herokuapp.com/users/${user.Username}/movies/${movieId}`,
-      {
-        method: isFavorite ? "DELETE" : "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    )
-      .then(() => {
-        handleUserUpdated(updatedUser);
-      })
-      .catch((error) => {
-        console.error("Error updating favorite movies:", error);
-      });
+      fetch(
+        `https://murmuring-brook-46457-0204485674b0.herokuapp.com/users/${user.Username}/movies/${movieId}`,
+        {
+          method: isFavorite ? "DELETE" : "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+        .then(() => {
+          handleUserUpdated(updatedUser);
+        })
+        .catch((error) => {
+          console.error("Error updating favorite movies:", error);
+        });
+    } else {
+      // Handle the case where user or user.FavoriteMovies are invalid
+      console.warn("user or user.FavoriteMovies is invalid");
+    }
   };
 
   const MovieViewWrapper = () => {
@@ -106,7 +116,7 @@ export function MainView() {
 
   return (
     <Router>
-      <Navbar bg="light" expand="lg">
+      <Navbar expand="lg" className="p-3">
         <Navbar.Brand as={Link} to="/">
           MyFlix
         </Navbar.Brand>

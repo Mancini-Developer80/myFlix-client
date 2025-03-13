@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 
 export function MovieView({ movie, isFavorite, onFavoriteToggle }) {
   return (
-    <div className="main-view">
+    <div className="main-view mt-5 text-center">
       <h1>{movie.Title}</h1>
       <div className="img">
         <img src={movie.image} alt={movie.Title} />
@@ -24,7 +24,7 @@ export function MovieView({ movie, isFavorite, onFavoriteToggle }) {
         {movie.Actors &&
           movie.Actors.map((actor, index) => <li key={index}>{actor}</li>)}
       </ul>
-      <Link to="/" className="btn btn-primary">
+      <Link to="/" className="btn btn-primary me-4">
         Back
       </Link>
       <Button

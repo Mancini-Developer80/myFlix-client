@@ -64,6 +64,27 @@ export function ProfileView({ user, movies, onLoggedOut, onUserUpdated }) {
       });
   };
 
+  const handleRemoveFavorite = (movieId) => {
+    const updatedFavorites = user.FavoriteMovies.filter((id) => id !== movieId);
+    const updatedUser = { ...user, FavoriteMovies: updatedFavorites };
+
+    fetch(
+      `https://murmuring-brook-46457-0204485674b0.herokuapp.com/users/${user.Username}/movies/${movieId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    )
+      .then(() => {
+        onUserUpdated(updatedUser);
+      })
+      .catch((error) => {
+        console.error("Error removing favorite movie:", error);
+      });
+  };
+
   return (
     <div className="profile-view">
       <h1>Profile</h1>
@@ -118,7 +139,20 @@ export function ProfileView({ user, movies, onLoggedOut, onUserUpdated }) {
       <h2 className="mt-4">Favorite Movies</h2>
       <div className="d-flex flex-wrap">
         {favoriteMovies.map((movie) => (
-          <MovieCard key={movie._id} movie={movie} />
+          <div key={movie._id} className="position-relative">
+            <MovieCard
+              movie={movie}
+              isFavorite={true} // Ensure isFavorite is true for favorite movies
+              onFavoriteToggle={handleRemoveFavorite}
+            />
+            <Button
+              variant="danger"
+              className="position-absolute top-0 end-0"
+              onClick={() => handleRemoveFavorite(movie._id)}
+            >
+              Remove
+            </Button>
+          </div>
         ))}
       </div>
     </div>
