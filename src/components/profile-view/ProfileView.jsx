@@ -137,7 +137,7 @@ export function ProfileView({ user, movies, onLoggedOut, onUserUpdated }) {
         Deregister
       </Button>
       <h2 className="mt-4">Favorite Movies</h2>
-      <div className="d-flex flex-wrap">
+      <div>
         {favoriteMovies.map((movie) => (
           <div key={movie._id} className="position-relative">
             <MovieCard
@@ -145,13 +145,6 @@ export function ProfileView({ user, movies, onLoggedOut, onUserUpdated }) {
               isFavorite={true} // Ensure isFavorite is true for favorite movies
               onFavoriteToggle={handleRemoveFavorite}
             />
-            <Button
-              variant="danger"
-              className="position-absolute top-0 end-0"
-              onClick={() => handleRemoveFavorite(movie._id)}
-            >
-              Remove
-            </Button>
           </div>
         ))}
       </div>

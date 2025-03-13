@@ -28182,31 +28182,18 @@ function ProfileView({ user, movies, onLoggedOut, onUserUpdated }) {
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                className: "d-flex flex-wrap",
                 children: favoriteMovies.map((movie)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                         className: "position-relative",
-                        children: [
-                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _movieCard.MovieCard), {
-                                movie: movie,
-                                isFavorite: true,
-                                onFavoriteToggle: handleRemoveFavorite
-                            }, void 0, false, {
-                                fileName: "src/components/profile-view/ProfileView.jsx",
-                                lineNumber: 143,
-                                columnNumber: 13
-                            }, this),
-                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _buttonDefault.default), {
-                                variant: "danger",
-                                className: "position-absolute top-0 end-0",
-                                onClick: ()=>handleRemoveFavorite(movie._id),
-                                children: "Remove"
-                            }, void 0, false, {
-                                fileName: "src/components/profile-view/ProfileView.jsx",
-                                lineNumber: 148,
-                                columnNumber: 13
-                            }, this)
-                        ]
-                    }, movie._id, true, {
+                        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _movieCard.MovieCard), {
+                            movie: movie,
+                            isFavorite: true,
+                            onFavoriteToggle: handleRemoveFavorite
+                        }, void 0, false, {
+                            fileName: "src/components/profile-view/ProfileView.jsx",
+                            lineNumber: 143,
+                            columnNumber: 13
+                        }, this)
+                    }, movie._id, false, {
                         fileName: "src/components/profile-view/ProfileView.jsx",
                         lineNumber: 142,
                         columnNumber: 11
