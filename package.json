@@ -4,7 +4,8 @@
   "description": "The Frontend side of myFlix App",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html --public-url /"
   },
   "author": "Giuseppe Mancini",
   "license": "ISC",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.13.3",
+    "parcel-bundler": "^1.12.5",
     "process": "^0.11.10"
   }
 }
