@@ -8,7 +8,7 @@ export function MovieView({ movie, isFavorite, onFavoriteToggle }) {
     <div className="main-view mt-5 text-center">
       <h1>{movie.Title}</h1>
       <div className="img">
-        <img src={movie.image} alt={movie.Title} />
+        <img src={movie.ImageURL} alt={movie.Title} className="movie-image" />
       </div>
       <p>{movie.Description}</p>
       <p>

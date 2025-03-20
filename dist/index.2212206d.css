@@ -7187,6 +7187,14 @@ button:not(:disabled), [type="button"]:not(:disabled), [type="reset"]:not(:disab
   }
 }
 
+.movie-image {
+  object-fit: cover;
+  object-position: center;
+  width: 200px;
+  height: 300px;
+  margin-bottom: 3rem;
+}
+
 :root, [data-bs-theme="light"] {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;

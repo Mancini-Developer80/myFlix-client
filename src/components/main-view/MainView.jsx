@@ -99,6 +99,34 @@ export function MainView() {
     }
   };
 
+  const handleDeleteMovie = (movieId, movieTitle) => {
+    console.log(`Deleting movie with ID: ${movieId} and Title: ${movieTitle}`); // Log the movie ID and title
+    fetch(
+      `https://murmuring-brook-46457-0204485674b0.herokuapp.com/users/${user._id}/movies/${movieTitle}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          console.log(
+            `Movie with ID: ${movieId} and Title: ${movieTitle} deleted successfully`
+          ); // Log success message
+          setMovies((prevMovies) =>
+            prevMovies.filter((movie) => movie._id !== movieId)
+          );
+        } else {
+          console.error("Error deleting movie:", response.statusText);
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting movie:", error);
+      });
+  };
+
   const MovieViewWrapper = () => {
     const { movieId } = useParams();
     const movie = movies.find((m) => m._id === movieId);
@@ -160,6 +188,7 @@ export function MainView() {
                         movie={movie}
                         isFavorite={user?.FavoriteMovies?.includes(movie._id)}
                         onFavoriteToggle={handleFavoriteToggle}
+                        onDelete={handleDeleteMovie}
                       />
                     ))}
                   </div>
@@ -216,7 +245,7 @@ MainView.propTypes = {
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
       Title: PropTypes.string.isRequired,
-      image: PropTypes.string.isRequired,
+      ImageURL: PropTypes.string.isRequired,
       Description: PropTypes.string.isRequired,
       Genre: PropTypes.shape({
         Description: PropTypes.string.isRequired,

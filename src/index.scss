@@ -4,3 +4,12 @@ $btn-bg: #007bff; // Change this to your desired button background color
 
 // Import Bootstrap SCSS
 @import "~bootstrap/scss/bootstrap.scss";
+
+// Set a fixed size for movie images
+.movie-image {
+  width: 200px;
+  height: 300px;
+  margin-bottom: 3rem;
+  object-fit: cover;
+  object-position: center;
+}
