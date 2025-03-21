@@ -7,7 +7,9 @@ import { Link } from "react-router-dom";
 export function MovieCard({ movie, isFavorite, onFavoriteToggle, onDelete }) {
   return (
     <Card className="mb-3 mx-auto w-75 mt-4">
-      <Card.Img variant="top" src={movie.ImageURL} className="movie-image" />
+      <div className="d-flex justify-content-center align-items-center">
+        <Card.Img variant="top" src={movie.ImageURL} className="movie-image" />
+      </div>
       <Card.Body>
         <Card.Title className="display-5 text-center">{movie.Title}</Card.Title>
         <Card.Text className="lead text-center">{movie.Description}</Card.Text>
