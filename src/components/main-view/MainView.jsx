@@ -18,16 +18,16 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-// import "./mainView.scss";
+import Form from "react-bootstrap/Form";
 
 export function MainView() {
   const [movies, setMovies] = useState([]);
+  const [filteredMovies, setFilteredMovies] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState(() => {
-    // Retrieve user from localStorage if available
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
   });
-  const [showSignup, setShowSignup] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -39,13 +39,25 @@ export function MainView() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        console.log("Fetched movies:", data); // Log fetched movies
         setMovies(data);
+        setFilteredMovies(data); // Initialize filteredMovies with all movies
       })
       .catch((error) => {
         console.error("Error fetching movies:", error);
       });
   }, [user]);
+
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+
+    // Filter movies based on the search query
+    const filtered = movies.filter((movie) =>
+      movie.Title.toLowerCase().includes(query)
+    );
+    setFilteredMovies(filtered);
+  };
 
   const handleLogout = () => {
     setUser(null);
@@ -54,7 +66,6 @@ export function MainView() {
   };
 
   const handleLogin = (user, token) => {
-    // Ensure FavoriteMovies is an array
     if (!Array.isArray(user.FavoriteMovies)) {
       user.FavoriteMovies = [];
     }
@@ -69,7 +80,6 @@ export function MainView() {
   };
 
   const handleFavoriteToggle = (movieId) => {
-    // Instead of directly iterating over it, check if it exists and it is an array
     if (user && Array.isArray(user.FavoriteMovies)) {
       const isFavorite = user.FavoriteMovies.includes(movieId);
       const updatedFavorites = isFavorite
@@ -94,15 +104,14 @@ export function MainView() {
           console.error("Error updating favorite movies:", error);
         });
     } else {
-      // Handle the case where user or user.FavoriteMovies are invalid
       console.warn("user or user.FavoriteMovies is invalid");
     }
   };
 
-  const handleDeleteMovie = (movieId, movieTitle) => {
-    console.log(`Deleting movie with ID: ${movieId} and Title: ${movieTitle}`); // Log the movie ID and title
+  const handleDeleteMovie = (movieId) => {
+    console.log(`Attempting to delete movie with ID: ${movieId}`);
     fetch(
-      `https://murmuring-brook-46457-0204485674b0.herokuapp.com/users/${user._id}/movies/${movieTitle}`,
+      `https://murmuring-brook-46457-0204485674b0.herokuapp.com/movies/${movieId}`,
       {
         method: "DELETE",
         headers: {
@@ -111,15 +120,24 @@ export function MainView() {
       }
     )
       .then((response) => {
+        console.log("Response from DELETE request:", response); // Log the full response
         if (response.ok) {
-          console.log(
-            `Movie with ID: ${movieId} and Title: ${movieTitle} deleted successfully`
-          ); // Log success message
+          console.log(`Movie with ID: ${movieId} deleted successfully`);
           setMovies((prevMovies) =>
             prevMovies.filter((movie) => movie._id !== movieId)
           );
+          setFilteredMovies((prevFilteredMovies) =>
+            prevFilteredMovies.filter((movie) => movie._id !== movieId)
+          );
         } else {
-          console.error("Error deleting movie:", response.statusText);
+          console.error(
+            "Error deleting movie:",
+            response.status,
+            response.statusText
+          );
+          return response.json().then((error) => {
+            console.error("Error details:", error); // Log error details from the server
+          });
         }
       })
       .catch((error) => {
@@ -179,10 +197,18 @@ export function MainView() {
           path="/"
           element={
             user ? (
-              <Row>
-                <div>
+              <div>
+                <Form className="mb-4">
+                  <Form.Control
+                    type="text"
+                    placeholder="Search movies by title..."
+                    value={searchQuery}
+                    onChange={handleSearch}
+                  />
+                </Form>
+                <Row>
                   <div className="d-flex flex-wrap">
-                    {movies.map((movie) => (
+                    {filteredMovies.map((movie) => (
                       <MovieCard
                         key={movie._id}
                         movie={movie}
@@ -192,8 +218,8 @@ export function MainView() {
                       />
                     ))}
                   </div>
-                </div>
-              </Row>
+                </Row>
+              </div>
             ) : (
               <Navigate to="/login" />
             )
