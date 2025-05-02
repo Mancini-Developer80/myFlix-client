@@ -29,7 +29,7 @@ The MyFlix Client is a React-based front-end application for the MyFlix movie da
 ### Steps
 
 1. Clone the repository:
-  git clone https://github.com/your-username/myflix-client.git
+  git clone https://github.com/Mancini-Developer80/myflix-client.git
 cd myflix-client
 
 2. Install dependencies:
