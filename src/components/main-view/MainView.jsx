@@ -39,9 +39,8 @@ export function MainView() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Fetched movies:", data); // Log fetched movies
         setMovies(data);
-        setFilteredMovies(data); // Initialize filteredMovies with all movies
+        setFilteredMovies(data);
       })
       .catch((error) => {
         console.error("Error fetching movies:", error);
@@ -52,7 +51,6 @@ export function MainView() {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
 
-    // Filter movies based on the search query
     const filtered = movies.filter((movie) =>
       movie.Title.toLowerCase().includes(query)
     );
@@ -66,8 +64,8 @@ export function MainView() {
   };
 
   const handleLogin = (user, token) => {
-    if (!Array.isArray(user.FavoriteMovies)) {
-      user.FavoriteMovies = [];
+    if (!Array.isArray(user.favoriteMovies)) {
+      user.favoriteMovies = [];
     }
     setUser(user);
     localStorage.setItem("user", JSON.stringify(user));
@@ -79,17 +77,20 @@ export function MainView() {
     localStorage.setItem("user", JSON.stringify(updatedUser));
   };
 
-  const handleFavoriteToggle = (movieId) => {
-    if (user && Array.isArray(user.FavoriteMovies)) {
-      const isFavorite = user.FavoriteMovies.includes(movieId);
+  // Updated: expects the whole movie object
+  const handleFavoriteToggle = (movie) => {
+    if (user && Array.isArray(user.favoriteMovies)) {
+      const isFavorite = user.favoriteMovies.includes(movie._id);
       const updatedFavorites = isFavorite
-        ? user.FavoriteMovies.filter((id) => id !== movieId)
-        : [...user.FavoriteMovies, movieId];
+        ? user.favoriteMovies.filter((id) => id !== movie._id)
+        : [...user.favoriteMovies, movie._id];
 
-      const updatedUser = { ...user, FavoriteMovies: updatedFavorites };
+      const updatedUser = { ...user, favoriteMovies: updatedFavorites };
 
       fetch(
-        `https://murmuring-brook-46457-0204485674b0.herokuapp.com/users/${user.Username}/movies/${movieId}`,
+        `https://murmuring-brook-46457-0204485674b0.herokuapp.com/users/${
+          user._id
+        }/movies/${encodeURIComponent(movie.Title)}`,
         {
           method: isFavorite ? "DELETE" : "POST",
           headers: {
@@ -104,12 +105,12 @@ export function MainView() {
           console.error("Error updating favorite movies:", error);
         });
     } else {
-      console.warn("user or user.FavoriteMovies is invalid");
+      console.warn("user or user.favoriteMovies is invalid");
     }
   };
 
+  // Note: This will only work if your backend supports DELETE /movies/:id for admins
   const handleDeleteMovie = (movieId) => {
-    console.log(`Attempting to delete movie with ID: ${movieId}`);
     fetch(
       `https://murmuring-brook-46457-0204485674b0.herokuapp.com/movies/${movieId}`,
       {
@@ -120,9 +121,7 @@ export function MainView() {
       }
     )
       .then((response) => {
-        console.log("Response from DELETE request:", response); // Log the full response
         if (response.ok) {
-          console.log(`Movie with ID: ${movieId} deleted successfully`);
           setMovies((prevMovies) =>
             prevMovies.filter((movie) => movie._id !== movieId)
           );
@@ -130,13 +129,13 @@ export function MainView() {
             prevFilteredMovies.filter((movie) => movie._id !== movieId)
           );
         } else {
-          console.error(
-            "Error deleting movie:",
-            response.status,
-            response.statusText
-          );
-          return response.json().then((error) => {
-            console.error("Error details:", error); // Log error details from the server
+          response.text().then((error) => {
+            console.error(
+              "Error deleting movie:",
+              response.status,
+              response.statusText,
+              error
+            );
           });
         }
       })
@@ -153,8 +152,8 @@ export function MainView() {
       <Col>
         <MovieView
           movie={movie}
-          isFavorite={user?.FavoriteMovies?.includes(movie._id)}
-          onFavoriteToggle={handleFavoriteToggle}
+          isFavorite={user?.favoriteMovies?.includes(movie._id)}
+          onFavoriteToggle={() => handleFavoriteToggle(movie)}
         />
       </Col>
     );
@@ -212,8 +211,8 @@ export function MainView() {
                       <MovieCard
                         key={movie._id}
                         movie={movie}
-                        isFavorite={user?.FavoriteMovies?.includes(movie._id)}
-                        onFavoriteToggle={handleFavoriteToggle}
+                        isFavorite={user?.favoriteMovies?.includes(movie._id)}
+                        onFavoriteToggle={() => handleFavoriteToggle(movie)}
                         onDelete={handleDeleteMovie}
                       />
                     ))}
@@ -281,6 +280,6 @@ MainView.propTypes = {
       }).isRequired,
       Actors: PropTypes.arrayOf(PropTypes.string),
     })
-  ).isRequired,
+  ),
   setMovies: PropTypes.func,
 };

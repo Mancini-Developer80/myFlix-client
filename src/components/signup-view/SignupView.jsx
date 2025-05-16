@@ -37,18 +37,21 @@ export function SignupView() {
       },
       body: JSON.stringify(data),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data) {
-          setSuccess("Signup successful");
-          setError("");
-        } else {
-          setError("Signup failed");
+      .then(async (response) => {
+        if (!response.ok) {
+          // Try to parse error JSON from the server, fallback to text
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || "Signup failed");
         }
+        return response.json();
+      })
+      .then((data) => {
+        setSuccess("Signup successful");
+        setError("");
       })
       .catch((error) => {
-        console.error("Error during signup:", error);
-        setError("Signup failed");
+        console.error("Error during signup:", error.message);
+        setError(error.message || "Signup failed");
       });
   };
 

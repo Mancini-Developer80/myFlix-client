@@ -5,29 +5,37 @@ import Form from "react-bootstrap/Form";
 import { MovieCard } from "../movie-card/MovieCard";
 
 export function ProfileView({ user, movies, onLoggedOut, onUserUpdated }) {
-  const [username, setUsername] = useState(user.Username);
+  const [username, setUsername] = useState(user.username || "");
   const [password, setPassword] = useState("");
-  const [email, setEmail] = useState(user.Email);
-  const [birthday, setBirthday] = useState(user.Birthday);
+  const [email, setEmail] = useState(user.email || "");
+  const [birthday, setBirthday] = useState(user.birthday || "");
   const [favoriteMovies, setFavoriteMovies] = useState([]);
+
+  // Sync form fields with user prop when it changes
+  useEffect(() => {
+    setUsername(user.username || "");
+    setEmail(user.email || "");
+    setBirthday(user.birthday || "");
+    setPassword("");
+  }, [user]);
 
   useEffect(() => {
     setFavoriteMovies(
-      movies.filter((m) => user.FavoriteMovies?.includes(m._id))
+      movies.filter((m) => user.favoriteMovies?.includes(m._id))
     );
-  }, [movies, user.FavoriteMovies]);
+  }, [movies, user.favoriteMovies]);
 
   const handleUpdate = (e) => {
     e.preventDefault();
     const updatedUser = {
-      username: username,
-      password: password,
-      email: email,
-      birthday: birthday,
+      username,
+      password,
+      email,
+      birthday,
     };
 
     fetch(
-      `https://murmuring-brook-46457-0204485674b0.herokuapp.com/users/${user.Username}`,
+      `https://murmuring-brook-46457-0204485674b0.herokuapp.com/users/${user.username}`,
       {
         method: "PUT",
         headers: {
@@ -48,7 +56,7 @@ export function ProfileView({ user, movies, onLoggedOut, onUserUpdated }) {
 
   const handleDeregister = () => {
     fetch(
-      `https://murmuring-brook-46457-0204485674b0.herokuapp.com/users/${user.Username}`,
+      `https://murmuring-brook-46457-0204485674b0.herokuapp.com/users/${user.username}`,
       {
         method: "DELETE",
         headers: {
@@ -65,11 +73,16 @@ export function ProfileView({ user, movies, onLoggedOut, onUserUpdated }) {
   };
 
   const handleRemoveFavorite = (movieId) => {
-    const updatedFavorites = user.FavoriteMovies.filter((id) => id !== movieId);
-    const updatedUser = { ...user, FavoriteMovies: updatedFavorites };
+    const movie = movies.find((m) => m._id === movieId);
+    if (!movie) return;
+
+    const updatedFavorites = user.favoriteMovies.filter((id) => id !== movieId);
+    const updatedUser = { ...user, favoriteMovies: updatedFavorites };
 
     fetch(
-      `https://murmuring-brook-46457-0204485674b0.herokuapp.com/users/${user.Username}/movies/${movieId}`,
+      `https://murmuring-brook-46457-0204485674b0.herokuapp.com/users/${
+        user.username
+      }/movies/${encodeURIComponent(movie.Title)}`,
       {
         method: "DELETE",
         headers: {
@@ -86,64 +99,67 @@ export function ProfileView({ user, movies, onLoggedOut, onUserUpdated }) {
   };
 
   return (
-    <div className="profile-view">
-      <h1>Profile</h1>
-      <Form onSubmit={handleUpdate}>
-        <Form.Group controlId="formUsername" className="mb-3">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </Form.Group>
-        <Form.Group controlId="formPassword" className="mb-3">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Form.Group>
-        <Form.Group controlId="formEmail" className="mb-3">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </Form.Group>
-        <Form.Group controlId="formBirthday" className="mb-3">
-          <Form.Label>Birthday</Form.Label>
-          <Form.Control
-            type="date"
-            value={birthday}
-            onChange={(e) => setBirthday(e.target.value)}
-            required
-          />
-        </Form.Group>
-        <Button type="submit" variant="primary" className="w-100">
-          Update
+    <div className="profile-view container my-5">
+      <h1 className="text-center mb-4">Profile</h1>
+      <div className="mx-auto" style={{ maxWidth: "500px" }}>
+        <Form onSubmit={handleUpdate}>
+          <Form.Group controlId="formUsername" className="mb-3">
+            <Form.Label>Username</Form.Label>
+            <Form.Control
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group controlId="formPassword" className="mb-3">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group controlId="formEmail" className="mb-3">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group controlId="formBirthday" className="mb-3">
+            <Form.Label>Birthday</Form.Label>
+            <Form.Control
+              type="date"
+              value={birthday}
+              onChange={(e) => setBirthday(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Button type="submit" variant="primary" className="w-100">
+            Update
+          </Button>
+        </Form>
+        <Button
+          variant="danger"
+          className="mt-3 w-100"
+          onClick={handleDeregister}
+        >
+          Deregister
         </Button>
-      </Form>
-      <Button
-        variant="danger"
-        className="mt-3 w-100"
-        onClick={handleDeregister}
-      >
-        Deregister
-      </Button>
-      <h2 className="mt-4">Favorite Movies</h2>
-      <div>
+      </div>
+      <h2 className="mt-5 mb-4 text-center">Favorite Movies</h2>
+      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {favoriteMovies.map((movie) => (
-          <div key={movie._id} className="position-relative">
+          <div key={movie._id} className="col d-flex">
             <MovieCard
               movie={movie}
-              isFavorite={true} // Ensure isFavorite is true for favorite movies
-              onFavoriteToggle={handleRemoveFavorite}
+              isFavorite={true}
+              onFavoriteToggle={() => handleRemoveFavorite(movie._id)}
+              showDelete={false}
             />
           </div>
         ))}
@@ -154,10 +170,10 @@ export function ProfileView({ user, movies, onLoggedOut, onUserUpdated }) {
 
 ProfileView.propTypes = {
   user: PropTypes.shape({
-    Username: PropTypes.string.isRequired,
-    Email: PropTypes.string.isRequired,
-    Birthday: PropTypes.string.isRequired,
-    FavoriteMovies: PropTypes.arrayOf(PropTypes.string).isRequired,
+    username: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    birthday: PropTypes.string.isRequired,
+    favoriteMovies: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
   movies: PropTypes.arrayOf(
     PropTypes.shape({
